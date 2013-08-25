@@ -1,8 +1,10 @@
 package com.github.lassana.continuos_audiorecorder;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.Button;
 
 import com.github.lassana.continuos_audiorecorder.activity.MainActivity;
+import com.github.lassana.continuos_audiorecorder.fragment.MainFragment;
 import com.jayway.android.robotium.solo.Solo;
 
 /**
@@ -14,6 +16,10 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     private Solo solo;
 
     private MainActivity mMainActivity;
+    private MainFragment mMainFragment;
+    private Button mStartButton;
+    private Button mPauseButton;
+    private Button mStopButton;
 
     public MainActivityTest() {
         super(MainActivity.class);
@@ -34,7 +40,19 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     public void testDoubleRecorder() {
-        assertNotNull(null);
+        //assertNotNull(null);
+
+        solo.clickOnButton("Start record");
+        solo.sleep(1000);
+        solo.clickOnButton("Pause record");
+        solo.sleep(1000);
+        solo.clickOnButton("Start record");
+        solo.sleep(1000);
+        solo.clickOnButton("Pause record");
+        solo.sleep(1000);
+        solo.clickOnButton("Play record");
+        solo.sleep(1000);
+        solo.goBack();
     }
 
 }

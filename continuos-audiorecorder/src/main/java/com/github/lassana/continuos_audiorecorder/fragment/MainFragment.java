@@ -1,14 +1,19 @@
 package com.github.lassana.continuos_audiorecorder.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.github.lassana.continuos_audiorecorder.R;
 import com.github.lassana.continuos_audiorecorder.recorder.AudioRecorder;
+
+import java.io.File;
 
 /**
  * @author lassana
@@ -23,6 +28,8 @@ public class MainFragment extends Fragment {
     private Button mPlayButton;
 
     private AudioRecorder mAudioRecorder;
+
+    private String mActiveRecordFileName;
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
@@ -52,7 +59,7 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAudioRecorder = AudioRecorder.build();
+        mAudioRecorder = AudioRecorder.build("/sdcard/1.mp4");
 
         mStartButton = (Button) view.findViewById(R.id.buttonStartRecord);
         mStartButton.setOnClickListener(mOnClickListener);
@@ -69,22 +76,22 @@ public class MainFragment extends Fragment {
             case STATUS_UNKNOWN:
                 mStartButton.setEnabled(false);
                 mPauseButton.setEnabled(false);
-                mPlayButton.setEnabled(mAudioRecorder.getRecordFileName() != null);
+                mPlayButton.setEnabled(false);
                 break;
-            case STATUS_READY:
+            case STATUS_READY_TO_RECORD:
                 mStartButton.setEnabled(true);
                 mPauseButton.setEnabled(false);
-                mPlayButton.setEnabled(mAudioRecorder.getRecordFileName() != null);
+                mPlayButton.setEnabled(false);
                 break;
             case STATUS_RECORDING:
                 mStartButton.setEnabled(false);
                 mPauseButton.setEnabled(true);
                 mPlayButton.setEnabled(false);
                 break;
-            case STATUS_PAUSED:
+            case STATUS_RECORD_PAUSED:
                 mStartButton.setEnabled(true);
                 mPauseButton.setEnabled(false);
-                mPlayButton.setEnabled(mAudioRecorder.getRecordFileName() != null);
+                mPlayButton.setEnabled(true);
                 break;
             default:
                 break;
@@ -92,14 +99,43 @@ public class MainFragment extends Fragment {
     }
 
     private void start() {
+        mAudioRecorder.start(new AudioRecorder.OnStartListener() {
+            @Override
+            public void onStarted() {
+                invalidateButtons();
+            }
 
+            @Override
+            public void onError(Throwable th) {
+                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, th),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void pause() {
+        mAudioRecorder.pause(new AudioRecorder.OnPauseListener() {
+            @Override
+            public void onPaused(String activeRecordFileName) {
+                mActiveRecordFileName = activeRecordFileName;
+                invalidateButtons();
+            }
 
+            @Override
+            public void onError(Throwable th) {
+                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, th),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void play() {
-
+        File file = new File(mActiveRecordFileName);
+        if ( file.exists() ) {
+            Intent intent = new Intent();
+            intent.setAction(android.content.Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), "audio/*");
+            startActivity(intent);
+        }
     }
 }

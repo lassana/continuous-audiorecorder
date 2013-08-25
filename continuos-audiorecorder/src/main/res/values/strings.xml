@@ -7,5 +7,6 @@
     <string name="button_start_record">Start record</string>
     <string name="button_pause_record">Pause record</string>
     <string name="button_play_record">Play record</string>
+    <string name="toast_error_audio_recorder">Audio recorder error: %1$s</string>
 
 </resources>

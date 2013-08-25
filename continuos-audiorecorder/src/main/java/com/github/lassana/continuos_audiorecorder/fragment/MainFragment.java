@@ -107,6 +107,7 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onError(Throwable th) {
+                invalidateButtons();
                 Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, th),
                         Toast.LENGTH_SHORT).show();
             }
@@ -123,6 +124,7 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onError(Throwable th) {
+                invalidateButtons();
                 Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, th),
                         Toast.LENGTH_SHORT).show();
             }

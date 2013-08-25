@@ -22,11 +22,7 @@ public class AudioRecorder {
     }
 
     public static interface OnPauseListener extends OnError {
-        public void onStarted();
-    }
-
-    public static interface OnStopListener extends OnError {
-        public void onStarted();
+        public void onPaused();
     }
 
     private Status mStatus;
@@ -41,15 +37,17 @@ public class AudioRecorder {
         return new AudioRecorder();
     }
 
+    /**
+     * Сontinues existing record or starts new one.
+     */
     public void start(final OnStartListener listener) {
 
     }
 
+    /**
+     * Pauses active recording.
+     */
     public void pause(final OnPauseListener listener) {
-
-    }
-
-    public void stop(final OnStopListener listener) {
 
     }
 

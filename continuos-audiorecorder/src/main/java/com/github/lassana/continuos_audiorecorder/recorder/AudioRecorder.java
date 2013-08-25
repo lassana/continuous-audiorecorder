@@ -1,12 +1,19 @@
 package com.github.lassana.continuos_audiorecorder.recorder;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 
 import com.github.lassana.continuos_audiorecorder.util.ApiHelper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author lassana
@@ -45,7 +52,7 @@ public class AudioRecorder {
             mMediaRecorder.setAudioChannels(2);
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mMediaRecorder.setOutputFile(mActiveRecordFileName);
+            mMediaRecorder.setOutputFile(getTemporaryFileName());
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
             Throwable throwable = null;
@@ -84,6 +91,10 @@ public class AudioRecorder {
             } catch (Throwable th) {
                 throwable = th;
             }
+            if ( throwable == null ) {
+                appendToFile(mTargetRecordFileName, getTemporaryFileName());
+            }
+            deleteTemporaryFileName();
             return throwable;
         }
 
@@ -92,7 +103,7 @@ public class AudioRecorder {
             super.onPostExecute(throwable);
             if (throwable == null) {
                 setStatus(AudioRecorder.Status.STATUS_RECORD_PAUSED);
-                mOnPauseListener.onPaused(mActiveRecordFileName);
+                mOnPauseListener.onPaused(mTargetRecordFileName);
             } else {
                 setStatus(AudioRecorder.Status.STATUS_READY_TO_RECORD);
                 mOnPauseListener.onError(throwable);
@@ -101,16 +112,19 @@ public class AudioRecorder {
     }
 
     private Status mStatus;
-    private String mActiveRecordFileName;
+    private String mTargetRecordFileName;
     private MediaRecorder mMediaRecorder;
+    private Context context;
 
     private AudioRecorder() {
-        mStatus = Status.STATUS_READY_TO_RECORD;
+        mStatus = Status.STATUS_UNKNOWN;
     }
 
-    public static AudioRecorder build(final String targetFileName) {
+    public static AudioRecorder build(Context context, final String targetFileName) {
         AudioRecorder rvalue = new AudioRecorder();
-        rvalue.mActiveRecordFileName = targetFileName;
+        rvalue.mTargetRecordFileName = targetFileName;
+        rvalue.context = context;
+        rvalue.mStatus = Status.STATUS_READY_TO_RECORD;
         return rvalue;
     }
 
@@ -145,7 +159,7 @@ public class AudioRecorder {
     }
 
     public String getRecordFileName() {
-        return mActiveRecordFileName;
+        return mTargetRecordFileName;
     }
 
     public boolean isRecording() {
@@ -162,5 +176,36 @@ public class AudioRecorder {
 
     private void setStatus(final Status status) {
         mStatus = status;
+    }
+
+    private String getTemporaryFileName() {
+        return context.getCacheDir().getAbsolutePath() + File.separator + "tmprecord";
+    }
+
+    private boolean deleteTemporaryFileName() {
+        return new File(getTemporaryFileName()).delete();
+    }
+
+    private void appendToFile(final String targetFileName, final String newFileName) {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(newFileName);
+            out = new FileOutputStream(targetFileName);
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        new File(newFileName).delete();
     }
 }

@@ -59,7 +59,7 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAudioRecorder = AudioRecorder.build("/sdcard/1.mp4");
+        mAudioRecorder = AudioRecorder.build(getActivity(), "/sdcard/1.mp4");
 
         mStartButton = (Button) view.findViewById(R.id.buttonStartRecord);
         mStartButton.setOnClickListener(mOnClickListener);

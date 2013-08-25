@@ -4,8 +4,8 @@
     <string name="app_name">continuos-audiorecorder</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="button_start">Start</string>
-    <string name="button_pause">Pause</string>
-    <string name="button_stop">Stop</string>
+    <string name="button_start_record">Start record</string>
+    <string name="button_pause_record">Pause record</string>
+    <string name="button_play_record">Play record</string>
 
 </resources>

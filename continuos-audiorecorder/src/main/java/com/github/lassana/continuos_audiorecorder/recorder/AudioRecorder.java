@@ -6,6 +6,13 @@ package com.github.lassana.continuos_audiorecorder.recorder;
  */
 public class AudioRecorder {
 
+    public static enum Status {
+        STATUS_UNKNOWN,
+        STATUS_READY,
+        STATUS_RECORDING,
+        STATUS_PAUSED
+    }
+
     public static interface OnError {
         public void onError();
     }
@@ -22,12 +29,16 @@ public class AudioRecorder {
         public void onStarted();
     }
 
-    private AudioRecorder() {
+    private Status mStatus;
+    private String mActiveRecordFileName;
 
+    private AudioRecorder() {
+        mStatus = Status.STATUS_UNKNOWN;
+        mActiveRecordFileName = null;
     }
 
     public static AudioRecorder build() {
-        return null;
+        return new AudioRecorder();
     }
 
     public void start(final OnStartListener listener) {
@@ -40,5 +51,25 @@ public class AudioRecorder {
 
     public void stop(final OnStopListener listener) {
 
+    }
+
+    public Status getStatus() {
+        return mStatus;
+    }
+
+    public String getRecordFileName() {
+        return mActiveRecordFileName;
+    }
+
+    public boolean isRecording() {
+        return mStatus == Status.STATUS_RECORDING;
+    }
+
+    public boolean isReady() {
+        return mStatus == Status.STATUS_READY;
+    }
+
+    public boolean isPaused() {
+        return mStatus == Status.STATUS_PAUSED;
     }
 }

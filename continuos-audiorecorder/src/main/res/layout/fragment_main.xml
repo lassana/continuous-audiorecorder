@@ -8,21 +8,21 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_start"
-            android:id="@+id/buttonStart"
+            android:text="@string/button_start_record"
+            android:id="@+id/buttonStartRecord"
             android:layout_gravity="left|center_vertical"/>
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_pause"
-            android:id="@+id/buttonPause"
+            android:text="@string/button_pause_record"
+            android:id="@+id/buttonPauseRecord"
             android:layout_gravity="left|center_vertical"/>
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_stop"
-            android:id="@+id/buttonStop"
+            android:text="@string/button_play_record"
+            android:id="@+id/buttonPlayRecord"
             android:layout_gravity="left|center_vertical"/>
 </LinearLayout>

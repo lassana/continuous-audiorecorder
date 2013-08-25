@@ -12,6 +12,11 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    instrumentTestCompile 'com.jayway.android.robotium:robotium-solo:4.2'
+}
+
+
 android {
     compileSdkVersion 18
     buildToolsVersion "18.0.0"
@@ -24,4 +29,10 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:18.0.0'
+}
+
+task test(dependsOn: "connectedInstrumentTest") << {
+}
+
+task debug(dependsOn: "installDebug") << {
 }

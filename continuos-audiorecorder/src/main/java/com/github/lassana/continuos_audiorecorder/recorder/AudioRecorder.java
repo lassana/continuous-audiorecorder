@@ -8,12 +8,7 @@ import android.os.AsyncTask;
 import com.github.lassana.continuos_audiorecorder.util.ApiHelper;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author lassana
@@ -94,7 +89,6 @@ public class AudioRecorder {
             if ( throwable == null ) {
                 appendToFile(mTargetRecordFileName, getTemporaryFileName());
             }
-            deleteTemporaryFileName();
             return throwable;
         }
 
@@ -182,30 +176,11 @@ public class AudioRecorder {
         return context.getCacheDir().getAbsolutePath() + File.separator + "tmprecord";
     }
 
-    private boolean deleteTemporaryFileName() {
-        return new File(getTemporaryFileName()).delete();
-    }
-
     private void appendToFile(final String targetFileName, final String newFileName) {
-        InputStream in = null;
-        OutputStream out = null;
         try {
-            in = new FileInputStream(newFileName);
-            out = new FileOutputStream(targetFileName);
-            // Transfer bytes from in to out
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Mp4ParserWrapper.append(targetFileName, newFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        new File(newFileName).delete();
     }
 }

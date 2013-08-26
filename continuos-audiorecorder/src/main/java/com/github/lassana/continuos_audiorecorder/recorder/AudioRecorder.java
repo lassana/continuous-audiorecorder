@@ -177,10 +177,6 @@ public class AudioRecorder {
     }
 
     private void appendToFile(final String targetFileName, final String newFileName) {
-        try {
-            Mp4ParserWrapper.append(targetFileName, newFileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Mp4ParserWrapper.append(targetFileName, newFileName);
     }
 }

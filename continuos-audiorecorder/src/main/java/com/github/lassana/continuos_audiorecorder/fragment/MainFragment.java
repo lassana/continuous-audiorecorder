@@ -3,6 +3,7 @@ package com.github.lassana.continuos_audiorecorder.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +60,8 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAudioRecorder = AudioRecorder.build(getActivity(), "/sdcard/1.mp4");
+        mAudioRecorder = AudioRecorder.build(getActivity(),
+                Environment.getExternalStorageDirectory() + File.separator + "1.mp4");
 
         mStartButton = (Button) view.findViewById(R.id.buttonStartRecord);
         mStartButton.setOnClickListener(mOnClickListener);

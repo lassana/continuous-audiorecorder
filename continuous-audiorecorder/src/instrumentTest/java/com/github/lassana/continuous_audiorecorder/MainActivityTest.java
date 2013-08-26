@@ -1,8 +1,8 @@
-package com.github.lassana.continuos_audiorecorder;
+package com.github.lassana.continuous_audiorecorder;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.github.lassana.continuos_audiorecorder.activity.MainActivity;
+import com.github.lassana.continuous_audiorecorder.activity.MainActivity;
 import com.jayway.android.robotium.solo.Solo;
 
 /**

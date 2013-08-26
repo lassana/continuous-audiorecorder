@@ -11,7 +11,7 @@
 
     <fragment
             android:id="@+id/fragment"
-            class="com.github.lassana.continuos_audiorecorder.fragment.MainFragment"
+            class="com.github.lassana.continuous_audiorecorder.fragment.MainFragment"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             tools:layout="@layout/fragment_main"

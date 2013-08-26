@@ -1,4 +1,4 @@
-package com.github.lassana.continuos_audiorecorder.recorder;
+package com.github.lassana.continuous_audiorecorder.recorder;
 
 import android.util.Log;
 

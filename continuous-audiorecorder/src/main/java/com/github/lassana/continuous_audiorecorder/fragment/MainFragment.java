@@ -1,4 +1,4 @@
-package com.github.lassana.continuos_audiorecorder.fragment;
+package com.github.lassana.continuous_audiorecorder.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.github.lassana.continuos_audiorecorder.R;
-import com.github.lassana.continuos_audiorecorder.recorder.AudioRecorder;
+import com.github.lassana.continuous_audiorecorder.R;
+import com.github.lassana.continuous_audiorecorder.recorder.AudioRecorder;
 
 import java.io.File;
 

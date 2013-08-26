@@ -1,11 +1,11 @@
-package com.github.lassana.continuos_audiorecorder.recorder;
+package com.github.lassana.continuous_audiorecorder.recorder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 
-import com.github.lassana.continuos_audiorecorder.util.ApiHelper;
+import com.github.lassana.continuous_audiorecorder.util.ApiHelper;
 
 import java.io.File;
 import java.io.IOException;

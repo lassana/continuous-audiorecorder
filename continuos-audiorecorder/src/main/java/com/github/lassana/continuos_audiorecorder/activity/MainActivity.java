@@ -1,9 +1,7 @@
 package com.github.lassana.continuos_audiorecorder.activity;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
 
 import com.github.lassana.continuos_audiorecorder.R;
 

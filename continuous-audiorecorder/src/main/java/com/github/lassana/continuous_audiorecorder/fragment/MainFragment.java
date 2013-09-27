@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.lassana.continuous_audiorecorder.R;
-import com.github.lassana.continuous_audiorecorder.recorder.AudioRecorder;
+import com.github.lassana.recorder.AudioRecorder;
 
 import java.io.File;
 
@@ -60,8 +60,7 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAudioRecorder = AudioRecorder.build(getActivity(),
-                Environment.getExternalStorageDirectory() + File.separator + "1.mp4");
+        mAudioRecorder = AudioRecorder.build(getActivity(), getNextFileName());
 
         mStartButton = (Button) view.findViewById(R.id.buttonStartRecord);
         mStartButton.setOnClickListener(mOnClickListener);
@@ -71,6 +70,14 @@ public class MainFragment extends Fragment {
         mPlayButton.setOnClickListener(mOnClickListener);
 
         invalidateButtons();
+    }
+
+    private String getNextFileName() {
+        return Environment.getExternalStorageDirectory()
+                + File.separator
+                + "Record_"
+                + System.currentTimeMillis()
+                + ".mp4";
     }
 
     private void invalidateButtons() {

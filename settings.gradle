@@ -1,1 +1,1 @@
-include ':continuous-audiorecorder'
+include ':continuous-audiorecorder', ':recorder'

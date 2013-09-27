@@ -1,11 +1,9 @@
-package com.github.lassana.continuous_audiorecorder.recorder;
+package com.github.lassana.recorder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
-
-import com.github.lassana.continuous_audiorecorder.util.ApiHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,7 +121,7 @@ public class AudioRecorder {
     }
 
     /**
-     * Сontinues existing record or starts new one.
+     * Continues existing record or starts new one.
      */
     @SuppressLint("NewApi")
     public void start(final OnStartListener listener) {

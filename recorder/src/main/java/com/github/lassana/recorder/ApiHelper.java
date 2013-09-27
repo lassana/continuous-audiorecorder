@@ -1,4 +1,4 @@
-package com.github.lassana.continuous_audiorecorder.util;
+package com.github.lassana.recorder;
 
 import android.os.Build;
 

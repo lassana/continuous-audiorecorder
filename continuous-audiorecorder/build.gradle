@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compile files('libs/isoviewer-2.0-RC-23.jar')
+    compile project(':recorder')
     instrumentTestCompile 'com.jayway.android.robotium:robotium-solo:4.2'
 }
 

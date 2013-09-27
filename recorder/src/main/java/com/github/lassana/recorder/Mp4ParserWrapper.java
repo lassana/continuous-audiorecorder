@@ -1,4 +1,4 @@
-package com.github.lassana.continuous_audiorecorder.recorder;
+package com.github.lassana.recorder;
 
 import android.util.Log;
 
@@ -85,7 +85,7 @@ public class Mp4ParserWrapper {
         fos.close();
     }
 
-    // TODO remove deprecated code
+    // FIXME remove deprecated code
     public static void append(
             final FileInputStream fisOne,
             final FileInputStream fisTwo,

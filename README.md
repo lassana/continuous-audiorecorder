@@ -44,6 +44,6 @@ Pause:
 
 Use `start()` method to continue recording.
 
-## License
+## [License](https://github.com/lassana/continuous-audiorecorder/blob/master/LICENSE)
 
 This project is licensed under the FreeBSD License.

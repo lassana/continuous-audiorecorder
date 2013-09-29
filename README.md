@@ -1,6 +1,6 @@
 # Continuous audiorecorder
 
-Implementation of the missing feature in Android SDK: audio recorder with pause feature.
+Implementation of the missing feature in Android SDK: audio recorder with pause.
 
 ## Import
 

@@ -33,13 +33,52 @@ public class AudioRecorder {
         public void onPaused(String activeRecordFileName);
     }
 
+    /**
+     * @author lassana
+     * @since 10/06/2013
+     */
+    public static class MediaRecorderConfig {
+        private final int mAudioEncodingBitRate;
+        private final int mAudioChannels;
+        private final int mAudioSource;
+        private final int mAudioEncoder;
+
+        public static final MediaRecorderConfig DEFAULT =
+                new MediaRecorderConfig(64 * 1024,          /* 64 Kib per second */
+                        2,                                  /* Stereo */
+                        MediaRecorder.AudioSource.DEFAULT,  /* Default audio source.
+                                                               (usually, phone microphone) */
+                        ApiHelper.DEFAULT_AUDIO_ENCODER);   /* Default encoder
+                                                               for target Android version */
+
+        /**
+         * Constructor.
+         *
+         * @param audioEncodingBitRate
+         * Used for {@link android.media.MediaRecorder#setAudioEncodingBitRate}
+         * @param audioChannels
+         * Used for {@link android.media.MediaRecorder#setAudioChannels}
+         * @param audioSource
+         * Used for {@link android.media.MediaRecorder#setAudioSource}
+         * @param audioEncoder
+         * Used for {@link android.media.MediaRecorder#setAudioEncoder}
+         */
+        public MediaRecorderConfig(int audioEncodingBitRate, int audioChannels, int audioSource, int audioEncoder) {
+            mAudioEncodingBitRate = audioEncodingBitRate;
+            mAudioChannels = audioChannels;
+            mAudioSource = audioSource;
+            mAudioEncoder = audioEncoder;
+        }
+
+    }
+
     public class StartRecordTask extends AsyncTask<OnStartListener, Void, Throwable> {
 
         private OnStartListener mOnStartListener;
 
         @Override
         protected Throwable doInBackground(OnStartListener... params) {
-            mOnStartListener = params[0];
+            this.mOnStartListener = params[0];
             mMediaRecorder = new MediaRecorder();
             mMediaRecorder.setAudioEncodingBitRate(64 * 1024);
             mMediaRecorder.setAudioChannels(2);

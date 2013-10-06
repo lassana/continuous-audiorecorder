@@ -14,7 +14,7 @@ Just copy `recorder` module into your project and add dependence:
 
 Start record:
 
-    AudioRecorder recorder = AudioRecorder.build(activity, filename);
+    AudioRecorder recorder = AudioRecorder.build(context, filename);
 
     recorder.start(new AudioRecorder.OnStartListener() {
         @Override

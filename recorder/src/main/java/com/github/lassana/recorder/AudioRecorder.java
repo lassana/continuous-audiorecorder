@@ -33,20 +33,59 @@ public class AudioRecorder {
         public void onPaused(String activeRecordFileName);
     }
 
+    /**
+     * @author lassana
+     * @since 10/06/2013
+     */
+    public static class MediaRecorderConfig {
+        private final int mAudioEncodingBitRate;
+        private final int mAudioChannels;
+        private final int mAudioSource;
+        private final int mAudioEncoder;
+
+        public static final MediaRecorderConfig DEFAULT =
+                new MediaRecorderConfig(64 * 1024,          /* 64 Kib per second */
+                        2,                                  /* Stereo */
+                        MediaRecorder.AudioSource.DEFAULT,  /* Default audio source.
+                                                               (usually, phone microphone) */
+                        ApiHelper.DEFAULT_AUDIO_ENCODER);   /* Default encoder
+                                                               for target Android version */
+
+        /**
+         * Constructor.
+         *
+         * @param audioEncodingBitRate
+         * Used for {@link android.media.MediaRecorder#setAudioEncodingBitRate}
+         * @param audioChannels
+         * Used for {@link android.media.MediaRecorder#setAudioChannels}
+         * @param audioSource
+         * Used for {@link android.media.MediaRecorder#setAudioSource}
+         * @param audioEncoder
+         * Used for {@link android.media.MediaRecorder#setAudioEncoder}
+         */
+        public MediaRecorderConfig(int audioEncodingBitRate, int audioChannels, int audioSource, int audioEncoder) {
+            mAudioEncodingBitRate = audioEncodingBitRate;
+            mAudioChannels = audioChannels;
+            mAudioSource = audioSource;
+            mAudioEncoder = audioEncoder;
+        }
+
+    }
+
     public class StartRecordTask extends AsyncTask<OnStartListener, Void, Throwable> {
 
         private OnStartListener mOnStartListener;
 
         @Override
         protected Throwable doInBackground(OnStartListener... params) {
-            mOnStartListener = params[0];
+            this.mOnStartListener = params[0];
             mMediaRecorder = new MediaRecorder();
-            mMediaRecorder.setAudioEncodingBitRate(64 * 1024);
-            mMediaRecorder.setAudioChannels(2);
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+            mMediaRecorder.setAudioEncodingBitRate(mMediaRecorderConfig.mAudioEncodingBitRate);
+            mMediaRecorder.setAudioChannels(mMediaRecorderConfig.mAudioChannels);
+            mMediaRecorder.setAudioSource(mMediaRecorderConfig.mAudioSource);
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mMediaRecorder.setOutputFile(getTemporaryFileName());
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mMediaRecorder.setAudioEncoder(mMediaRecorderConfig.mAudioEncoder);
 
             Throwable throwable = null;
             try {
@@ -107,15 +146,32 @@ public class AudioRecorder {
     private String mTargetRecordFileName;
     private MediaRecorder mMediaRecorder;
     private Context context;
+    private MediaRecorderConfig mMediaRecorderConfig;
 
     private AudioRecorder() {
         mStatus = Status.STATUS_UNKNOWN;
     }
 
-    public static AudioRecorder build(Context context, final String targetFileName) {
+    /**
+     * Returns the ready-to-use AudioRecorder.
+     * Uses {@link com.github.lassana.recorder.AudioRecorder.MediaRecorderConfig#DEFAULT} as
+     * {@link android.media.MediaRecorder} config.
+     */
+    public static AudioRecorder build(final Context context,
+                                      final String targetFileName) {
+        return build(context, targetFileName, MediaRecorderConfig.DEFAULT);
+    }
+
+    /**
+     * Returns the ready-to-use AudioRecorder.
+     */
+    public static AudioRecorder build(Context context,
+                                      final String targetFileName,
+                                      final MediaRecorderConfig mediaRecorderConfig) {
         AudioRecorder rvalue = new AudioRecorder();
         rvalue.mTargetRecordFileName = targetFileName;
         rvalue.context = context;
+        rvalue.mMediaRecorderConfig = mediaRecorderConfig;
         rvalue.mStatus = Status.STATUS_READY_TO_RECORD;
         return rvalue;
     }

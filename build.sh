@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 set -x
 
-export ANDROID_SDK_TOOLS_VERSION=22.2.1
-export ANDROID_BUILD_TOOLS_VERSION=18.1
-export ANDROID_API_LEVEL=18
+export ANDROID_SDK_TOOLS_VERSION=22.3
+export ANDROID_BUILD_TOOLS_VERSION=19
+export ANDROID_API_LEVEL=19
 
 PATH=$(echo $PATH | sed 's/\/opt\/android-sdk-linux//')
 

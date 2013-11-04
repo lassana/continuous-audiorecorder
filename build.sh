@@ -26,5 +26,5 @@ chmod +x drone/run_emulator.sh
 chmod +x drone/wait_for_emulator.sh
 ./drone/wait_for_emulator.sh
 
-./gradlew test
+./gradlew test -stacktrace
 

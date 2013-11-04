@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+# http://blog.crowdint.com/2013/05/17/android-builds-on-travis-ci-with-maven.html
 
 bootanim=""
 failcounter=0

@@ -15,16 +15,16 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/build-tools
 
 chmod +x update_apt.sh
-./update_apt.sh > /dev/null
+./drone/update_apt.sh > /dev/null
 
 chmod +x install_sdk.sh
-./install_sdk.sh > /dev/null
+./drone/install_sdk.sh > /dev/null
 
 chmod +x run_emulator.sh
-./run_emulator.sh
+./drone/run_emulator.sh
 
 chmod +x wait_for_emulator.sh
-./wait_for_emulator.sh
+./drone/wait_for_emulator.sh
 
 ./gradlew test
 

@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath "com.android.tools.build:gradle:${androidPluginVersion}"
     }
 }
 apply plugin: 'android'
@@ -14,7 +14,8 @@ repositories {
 
 dependencies {
     compile project(':recorder')
-    instrumentTestCompile 'com.jayway.android.robotium:robotium-solo:4.2'
+    compile "com.android.support:support-v4:${supportLibVersion}"
+    instrumentTestCompile "com.jayway.android.robotium:robotium-solo:${robotiumVersion}"
 }
 
 
@@ -26,10 +27,6 @@ android {
         minSdkVersion 8
         targetSdkVersion 19
     }
-}
-
-dependencies {
-    compile 'com.android.support:support-v4:19.0.0'
 }
 
 task test(dependsOn: "connectedInstrumentTest") << {

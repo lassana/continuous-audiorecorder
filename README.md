@@ -4,6 +4,8 @@ Implementation of the missing feature in Android SDK: audio recorder with a paus
 
 Build status: [![Build Status](https://drone.io/github.com/lassana/continuous-audiorecorder/status.png)](https://drone.io/github.com/lassana/continuous-audiorecorder/latest)
 
+[Latest sample build](https://drone.io/github.com/lassana/continuous-audiorecorder/files)
+
 ## Import
 
 Just copy `recorder` module into your project and add dependence:

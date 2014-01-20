@@ -115,9 +115,9 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onError(Throwable th) {
+            public void onException(Exception e) {
                 invalidateButtons();
-                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, th),
+                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -132,9 +132,9 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onError(Throwable th) {
+            public void onException(Exception e) {
                 invalidateButtons();
-                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, th),
+                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
                         Toast.LENGTH_SHORT).show();
             }
         });

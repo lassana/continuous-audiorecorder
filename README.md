@@ -27,7 +27,7 @@ Start record:
         }
 
         @Override
-        public void onError(Throwable th) {
+        public void onException(Exception e) {
             // error
         }
     });
@@ -41,7 +41,7 @@ Pause:
         }
 
         @Override
-        public void onError(Throwable th) {
+        public void onException(Exception e) {
             // error
         }
     });

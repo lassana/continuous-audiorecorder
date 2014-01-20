@@ -21,15 +21,15 @@ public class AudioRecorder {
         STATUS_RECORD_PAUSED
     }
 
-    public static interface OnError {
-        public void onError(Throwable th);
+    public static interface OnException {
+        public void onException(Exception e);
     }
 
-    public static interface OnStartListener extends OnError {
+    public static interface OnStartListener extends OnException {
         public void onStarted();
     }
 
-    public static interface OnPauseListener extends OnError {
+    public static interface OnPauseListener extends OnException {
         public void onPaused(String activeRecordFileName);
     }
 
@@ -72,12 +72,12 @@ public class AudioRecorder {
 
     }
 
-    public class StartRecordTask extends AsyncTask<OnStartListener, Void, Throwable> {
+    public class StartRecordTask extends AsyncTask<OnStartListener, Void, Exception> {
 
         private OnStartListener mOnStartListener;
 
         @Override
-        protected Throwable doInBackground(OnStartListener... params) {
+        protected Exception doInBackground(OnStartListener... params) {
             this.mOnStartListener = params[0];
             mMediaRecorder = new MediaRecorder();
             mMediaRecorder.setAudioEncodingBitRate(mMediaRecorderConfig.mAudioEncodingBitRate);
@@ -87,57 +87,57 @@ public class AudioRecorder {
             mMediaRecorder.setOutputFile(getTemporaryFileName());
             mMediaRecorder.setAudioEncoder(mMediaRecorderConfig.mAudioEncoder);
 
-            Throwable throwable = null;
+            Exception exception = null;
             try {
                 mMediaRecorder.prepare();
                 mMediaRecorder.start();
             } catch (IOException e) {
-                throwable = e;
+                exception = e;
             }
-            return throwable;
+            return exception;
         }
 
         @Override
-        protected void onPostExecute(Throwable throwable) {
-            super.onPostExecute(throwable);
-            if (throwable == null) {
+        protected void onPostExecute(Exception e) {
+            super.onPostExecute(e);
+            if (e == null) {
                 setStatus(AudioRecorder.Status.STATUS_RECORDING);
                 mOnStartListener.onStarted();
             } else {
                 setStatus(AudioRecorder.Status.STATUS_READY_TO_RECORD);
-                mOnStartListener.onError(throwable);
+                mOnStartListener.onException(e);
             }
         }
     }
 
-    public class PauseRecordTask extends AsyncTask<OnPauseListener, Void, Throwable> {
+    public class PauseRecordTask extends AsyncTask<OnPauseListener, Void, Exception> {
         private OnPauseListener mOnPauseListener;
 
         @Override
-        protected Throwable doInBackground(OnPauseListener... params) {
+        protected Exception doInBackground(OnPauseListener... params) {
             mOnPauseListener = params[0];
-            Throwable throwable = null;
+            Exception exception = null;
             try {
                 mMediaRecorder.stop();
                 mMediaRecorder.release();
-            } catch (Throwable th) {
-                throwable = th;
+            } catch (Exception e) {
+                exception = e;
             }
-            if ( throwable == null ) {
+            if ( exception == null ) {
                 appendToFile(mTargetRecordFileName, getTemporaryFileName());
             }
-            return throwable;
+            return exception;
         }
 
         @Override
-        protected void onPostExecute(Throwable throwable) {
-            super.onPostExecute(throwable);
-            if (throwable == null) {
+        protected void onPostExecute(Exception e) {
+            super.onPostExecute(e);
+            if (e == null) {
                 setStatus(AudioRecorder.Status.STATUS_RECORD_PAUSED);
                 mOnPauseListener.onPaused(mTargetRecordFileName);
             } else {
                 setStatus(AudioRecorder.Status.STATUS_READY_TO_RECORD);
-                mOnPauseListener.onError(throwable);
+                mOnPauseListener.onException(e);
             }
         }
     }

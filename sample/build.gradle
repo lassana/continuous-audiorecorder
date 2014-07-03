@@ -15,7 +15,7 @@ repositories {
 dependencies {
     compile project(':recorder')
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    instrumentTestCompile "com.jayway.android.robotium:robotium-solo:${ROBOTIUM_VERSION}"
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:${ROBOTIUM_VERSION}"
 }
 
 
@@ -29,7 +29,7 @@ android {
     }
 }
 
-task test(dependsOn: "connectedInstrumentTest") << {
+task test(dependsOn: "connectedAndroidTest") << {
 }
 
 task debug(dependsOn: "installDebug") << {

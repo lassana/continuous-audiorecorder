@@ -44,12 +44,10 @@ public class AudioRecorder {
         private final int mAudioEncoder;
 
         public static final MediaRecorderConfig DEFAULT =
-                new MediaRecorderConfig(64 * 1024,          /* 64 Kib per second */
-                        2,                                  /* Stereo */
-                        MediaRecorder.AudioSource.DEFAULT,  /* Default audio source.
-                                                               (usually, phone microphone) */
-                        ApiHelper.DEFAULT_AUDIO_ENCODER);   /* Default encoder
-                                                               for target Android version */
+                new MediaRecorderConfig(64 * 1024,              /* 64 Kib per second                                */
+                        2,                                      /* Stereo                                           */
+                        MediaRecorder.AudioSource.DEFAULT,      /* Default audio source (usually, phone microphone) */
+                        ApiHelper.DEFAULT_AUDIO_ENCODER);       /* Default encoder for target Android version       */
 
         /**
          * Constructor.

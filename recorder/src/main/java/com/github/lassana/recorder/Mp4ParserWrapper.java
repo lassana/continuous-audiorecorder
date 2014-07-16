@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class Mp4ParserWrapper {
 
-    public static final String TAG = Mp4ParserWrapper.class.getSimpleName();
+    public static final String TAG = "Mp4ParserWrapper";
 
     public static final int FILE_BUFFER_SIZE = 1024;
 

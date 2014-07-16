@@ -1,7 +1,6 @@
 package com.github.lassana.recorder;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.media.MediaRecorder;
 import android.os.Build;
 

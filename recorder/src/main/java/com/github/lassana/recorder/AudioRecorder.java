@@ -141,12 +141,17 @@ public class AudioRecorder {
     }
 
     private Status mStatus;
-    private String mTargetRecordFileName;
     private MediaRecorder mMediaRecorder;
-    private Context context;
-    private MediaRecorderConfig mMediaRecorderConfig;
+    private final String mTargetRecordFileName;
+    private final Context mContext;
+    private final MediaRecorderConfig mMediaRecorderConfig;
 
-    private AudioRecorder() {
+    private AudioRecorder(final Context context,
+                          final String targetRecordFileName,
+                          final MediaRecorderConfig mediaRecorderConfig) {
+        mTargetRecordFileName = targetRecordFileName;
+        mContext = context;
+        mMediaRecorderConfig = mediaRecorderConfig;
         mStatus = Status.STATUS_UNKNOWN;
     }
 
@@ -163,13 +168,10 @@ public class AudioRecorder {
     /**
      * Returns the ready-to-use AudioRecorder.
      */
-    public static AudioRecorder build(Context context,
+    public static AudioRecorder build(final Context context,
                                       final String targetFileName,
                                       final MediaRecorderConfig mediaRecorderConfig) {
-        AudioRecorder rvalue = new AudioRecorder();
-        rvalue.mTargetRecordFileName = targetFileName;
-        rvalue.context = context;
-        rvalue.mMediaRecorderConfig = mediaRecorderConfig;
+        AudioRecorder rvalue = new AudioRecorder(context, targetFileName, mediaRecorderConfig);
         rvalue.mStatus = Status.STATUS_READY_TO_RECORD;
         return rvalue;
     }
@@ -225,7 +227,7 @@ public class AudioRecorder {
     }
 
     private String getTemporaryFileName() {
-        return context.getCacheDir().getAbsolutePath() + File.separator + "tmprecord";
+        return mContext.getCacheDir().getAbsolutePath() + File.separator + "tmprecord";
     }
 
     private void appendToFile(final String targetFileName, final String newFileName) {

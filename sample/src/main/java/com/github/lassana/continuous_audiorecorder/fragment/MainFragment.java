@@ -22,8 +22,6 @@ import java.io.File;
  */
 public class MainFragment extends Fragment {
 
-    private static final String TAG = MainFragment.class.getSimpleName();
-
     private Button mStartButton;
     private Button mPauseButton;
     private Button mPlayButton;

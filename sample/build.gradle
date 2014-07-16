@@ -3,10 +3,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${ANDROID_PLUGIN_VERSION}"
+        classpath "com.android.tools.build:gradle:0.12.+"
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
@@ -14,18 +14,18 @@ repositories {
 
 dependencies {
     compile project(':recorder')
-    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:${ROBOTIUM_VERSION}"
+    compile "com.android.support:support-v4:20.0.+"
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:4.3.1"
 }
 
 
 android {
-    compileSdkVersion Integer.parseInt(ANDROID_BUILD_SDK_VERSION)
-    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+    compileSdkVersion 19
+    buildToolsVersion "20"
 
     defaultConfig {
-        minSdkVersion Integer.parseInt(ANDROID_MIN_SDK_VERSION)
-        targetSdkVersion Integer.parseInt(ANDROID_BUILD_TARGET_SDK_VERSION)
+        minSdkVersion 8
+        targetSdkVersion 19
     }
 }
 

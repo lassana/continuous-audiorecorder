@@ -8,7 +8,7 @@ Build status: [![Build Status](https://drone.io/github.com/lassana/continuous-au
 
 ## Import
 
-Just copy `recorder` module into your project and add dependence:
+Just copy the `recorder` module into your project and add new dependency:
 
     dependencies {
         compile project(':recorder')
@@ -16,7 +16,7 @@ Just copy `recorder` module into your project and add dependence:
 
 ## Usage
 
-Start record:
+Start recording:
 
     AudioRecorder recorder = AudioRecorder.build(context, filename);
 

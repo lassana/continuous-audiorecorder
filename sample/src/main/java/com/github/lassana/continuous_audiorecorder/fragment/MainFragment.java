@@ -12,12 +12,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.lassana.continuous_audiorecorder.R;
+import com.github.lassana.continuous_audiorecorder.RecorderApplication;
 import com.github.lassana.recorder.AudioRecorder;
 
 import java.io.File;
 
 /**
- * @author lassana
+ * @author Nikolai Doronin {@literal <lassana.nd@gmail.com>}
  * @since 8/18/13
  */
 public class MainFragment extends Fragment {
@@ -26,21 +27,21 @@ public class MainFragment extends Fragment {
     private Button mPauseButton;
     private Button mPlayButton;
 
-    private AudioRecorder mAudioRecorder;
-
     private String mActiveRecordFileName;
+
+    private AudioRecorder mAudioRecorder;
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.buttonStartRecord:
+                case R.id.buttonStartRecording:
                     start();
                     break;
-                case R.id.buttonPauseRecord:
+                case R.id.buttonPauseRecording:
                     pause();
                     break;
-                case R.id.buttonPlayRecord:
+                case R.id.buttonPlayRecording:
                     play();
                     break;
                 default:
@@ -58,13 +59,15 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAudioRecorder = AudioRecorder.build(getActivity(), getNextFileName());
+        mAudioRecorder = savedInstanceState == null
+                ? RecorderApplication.getApplication(getActivity()).createRecorder(getNextFileName())
+                : RecorderApplication.getApplication(getActivity()).getRecorder();
 
-        mStartButton = (Button) view.findViewById(R.id.buttonStartRecord);
+        mStartButton = (Button) view.findViewById(R.id.buttonStartRecording);
         mStartButton.setOnClickListener(mOnClickListener);
-        mPauseButton = (Button) view.findViewById(R.id.buttonPauseRecord);
+        mPauseButton = (Button) view.findViewById(R.id.buttonPauseRecording);
         mPauseButton.setOnClickListener(mOnClickListener);
-        mPlayButton = (Button) view.findViewById(R.id.buttonPlayRecord);
+        mPlayButton = (Button) view.findViewById(R.id.buttonPlayRecording);
         mPlayButton.setOnClickListener(mOnClickListener);
 
         invalidateButtons();

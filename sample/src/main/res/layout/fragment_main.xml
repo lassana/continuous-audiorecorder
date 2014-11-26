@@ -9,20 +9,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_start_record"
-            android:id="@+id/buttonStartRecord"
+            android:id="@+id/buttonStartRecording"
             android:layout_gravity="left|center_vertical"/>
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_pause_record"
-            android:id="@+id/buttonPauseRecord"
+            android:id="@+id/buttonPauseRecording"
             android:layout_gravity="left|center_vertical"/>
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_play_record"
-            android:id="@+id/buttonPlayRecord"
+            android:id="@+id/buttonPlayRecording"
             android:layout_gravity="left|center_vertical"/>
 </LinearLayout>

@@ -19,7 +19,7 @@ import java.nio.channels.WritableByteChannel;
 import java.util.List;
 
 /**
- * @author lassana
+ * @author Nikolai Doronin {@literal <lassana.nd@gmail.com>}
  * @since 8/25/13
  */
 public class Mp4ParserWrapper {
@@ -52,7 +52,7 @@ public class Mp4ParserWrapper {
     }
 
 
-    public static void copyFile(final String from, final String destination)
+    private static void copyFile(final String from, final String destination)
             throws IOException {
         FileInputStream in = new FileInputStream(from);
         FileOutputStream out = new FileOutputStream(destination);
@@ -61,7 +61,7 @@ public class Mp4ParserWrapper {
         out.close();
     }
 
-    public static void copy(FileInputStream in, FileOutputStream out) throws IOException {
+    private static void copy(FileInputStream in, FileOutputStream out) throws IOException {
         byte[] buf = new byte[FILE_BUFFER_SIZE];
         int len;
         while ((len = in.read(buf)) > 0) {

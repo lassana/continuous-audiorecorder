@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author lassana
+ * @author Nikolai Doronin {@literal <lassana.nd@gmail.com>}
  * @since 8/18/13
  */
 public class AudioRecorder {
@@ -70,7 +70,7 @@ public class AudioRecorder {
 
     }
 
-    public class StartRecordTask extends AsyncTask<OnStartListener, Void, Exception> {
+    class StartRecordTask extends AsyncTask<OnStartListener, Void, Exception> {
 
         private OnStartListener mOnStartListener;
 
@@ -108,7 +108,7 @@ public class AudioRecorder {
         }
     }
 
-    public class PauseRecordTask extends AsyncTask<OnPauseListener, Void, Exception> {
+    class PauseRecordTask extends AsyncTask<OnPauseListener, Void, Exception> {
         private OnPauseListener mOnPauseListener;
 
         @Override

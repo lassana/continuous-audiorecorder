@@ -5,7 +5,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 
 /**
- * @author lassana
+ * @author Nikolai Doronin {@literal <lassana.nd@gmail.com>}
  * @since 8/25/13
  */
 public class ApiHelper {

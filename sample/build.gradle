@@ -3,25 +3,25 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.14.1'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 apply plugin: 'com.android.application'
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile project(':recorder')
-    compile "com.android.support:support-v4:21.0.2"
+    compile "com.android.support:support-v4:21.0.3"
     androidTestCompile "com.jayway.android.robotium:robotium-solo:4.3.1"
 }
 
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7

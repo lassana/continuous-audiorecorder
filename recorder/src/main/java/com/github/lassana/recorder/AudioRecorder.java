@@ -182,11 +182,8 @@ public class AudioRecorder {
     @SuppressLint("NewApi")
     public void start(final OnStartListener listener) {
         StartRecordTask task = new StartRecordTask();
-        if (ApiHelper.HAS_EXECUTE_ON_EXECUTOR_METHOD) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listener);
-        } else {
-            task.execute(listener);
-        }
+        task.execute(listener);
+
     }
 
     /**
@@ -195,11 +192,8 @@ public class AudioRecorder {
     @SuppressLint("NewApi")
     public void pause(final OnPauseListener listener) {
         PauseRecordTask task = new PauseRecordTask();
-        if (ApiHelper.HAS_EXECUTE_ON_EXECUTOR_METHOD) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listener);
-        } else {
-            task.execute(listener);
-        }
+        task.execute(listener);
+
     }
 
     public Status getStatus() {

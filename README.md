@@ -8,7 +8,20 @@ Build status: [![Build Status](https://drone.io/github.com/lassana/continuous-au
 
 ## Import
 
-Just copy the `recorder` module into your project and add new dependency:
+Grab the latest version from Bintray:
+
+    repositories {
+        jcenter()
+        maven {
+            url 'https://dl.bintray.com/lassana/maven/'
+        }
+    }
+    dependencies {
+        compile "com.googlecode.mp4parser:isoparser:1.0.2"
+        compile "com.github.lassana:continuous-audiorecorder:1.0.0"
+    }
+
+or just copy the `recorder` module into your project and add new dependency:
 
     dependencies {
         compile project(':recorder')

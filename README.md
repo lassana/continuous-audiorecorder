@@ -12,9 +12,6 @@ Grab the latest version from Bintray:
 
     repositories {
         jcenter()
-        maven {
-            url 'https://dl.bintray.com/lassana/maven/'
-        }
     }
     dependencies {
         compile "com.googlecode.mp4parser:isoparser:1.0.2"

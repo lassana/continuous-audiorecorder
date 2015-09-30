@@ -1,14 +1,22 @@
 package com.github.lassana.continuous_audiorecorder.fragment;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.lassana.continuous_audiorecorder.R;
@@ -16,6 +24,9 @@ import com.github.lassana.continuous_audiorecorder.RecorderApplication;
 import com.github.lassana.recorder.AudioRecorder;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Nikolai Doronin {@literal <lassana.nd@gmail.com>}
@@ -23,10 +34,14 @@ import java.io.File;
  */
 public class MainFragment extends Fragment {
 
+    private static final String TAG = "MainFragment";
+
     private Button mStartButton;
     private Button mPauseButton;
     private Button mPlayButton;
+    private ImageView mCassetteImage;
 
+    private Uri mAudioRecordUri;
     private String mActiveRecordFileName;
 
     private AudioRecorder mAudioRecorder;
@@ -63,6 +78,7 @@ public class MainFragment extends Fragment {
                 ? RecorderApplication.getApplication(getActivity()).createRecorder(getNextFileName())
                 : RecorderApplication.getApplication(getActivity()).getRecorder();
 
+        mCassetteImage = (ImageView) view.findViewById(R.id.image_cassette);
         mStartButton = (Button) view.findViewById(R.id.buttonStartRecording);
         mStartButton.setOnClickListener(mOnClickListener);
         mPauseButton = (Button) view.findViewById(R.id.buttonPauseRecording);
@@ -70,7 +86,7 @@ public class MainFragment extends Fragment {
         mPlayButton = (Button) view.findViewById(R.id.buttonPlayRecording);
         mPlayButton.setOnClickListener(mOnClickListener);
 
-        invalidateButtons();
+        invalidateView();
     }
 
     private String getNextFileName() {
@@ -81,24 +97,29 @@ public class MainFragment extends Fragment {
                 + ".mp4";
     }
 
-    private void invalidateButtons() {
+    private void invalidateView() {
         switch (mAudioRecorder.getStatus()) {
             case STATUS_UNKNOWN:
+                mCassetteImage.clearAnimation();
                 mStartButton.setEnabled(false);
                 mPauseButton.setEnabled(false);
                 mPlayButton.setEnabled(false);
                 break;
             case STATUS_READY_TO_RECORD:
+                mCassetteImage.clearAnimation();
                 mStartButton.setEnabled(true);
                 mPauseButton.setEnabled(false);
                 mPlayButton.setEnabled(false);
                 break;
             case STATUS_RECORDING:
+                mCassetteImage.startAnimation(
+                        AnimationUtils.loadAnimation(getActivity(), R.anim.animation_pulse));
                 mStartButton.setEnabled(false);
                 mPauseButton.setEnabled(true);
                 mPlayButton.setEnabled(false);
                 break;
             case STATUS_RECORD_PAUSED:
+                mCassetteImage.clearAnimation();
                 mStartButton.setEnabled(true);
                 mPauseButton.setEnabled(false);
                 mPlayButton.setEnabled(true);
@@ -112,12 +133,13 @@ public class MainFragment extends Fragment {
         mAudioRecorder.start(new AudioRecorder.OnStartListener() {
             @Override
             public void onStarted() {
-                invalidateButtons();
+                invalidateView();
             }
 
             @Override
             public void onException(Exception e) {
-                invalidateButtons();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                invalidateView();
                 Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
                         Toast.LENGTH_SHORT).show();
             }
@@ -129,12 +151,17 @@ public class MainFragment extends Fragment {
             @Override
             public void onPaused(String activeRecordFileName) {
                 mActiveRecordFileName = activeRecordFileName;
-                invalidateButtons();
+
+                getActivity().setResult(Activity.RESULT_OK,
+                        //new Intent().setData(Uri.parse(mActiveRecordFileName)));
+                        new Intent().setData(saveCurrentRecordToMediaDB(mActiveRecordFileName)));
+                invalidateView();
             }
 
             @Override
             public void onException(Exception e) {
-                invalidateButtons();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                invalidateView();
                 Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
                         Toast.LENGTH_SHORT).show();
             }
@@ -143,11 +170,56 @@ public class MainFragment extends Fragment {
 
     private void play() {
         File file = new File(mActiveRecordFileName);
-        if ( file.exists() ) {
+        if (file.exists()) {
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(file), "audio/*");
             startActivity(intent);
         }
+    }
+
+    /**
+     * Creates new item in the system'm media database.
+     * @see <a href="https://github.com/android/platform_packages_apps_soundrecorder/blob/master/src/com/android/soundrecorder/SoundRecorder.java">Android Recorder source</a>
+     */
+    public Uri saveCurrentRecordToMediaDB(final String fileName) {
+        if (mAudioRecordUri != null) return mAudioRecordUri;
+
+        final Activity activity = getActivity();
+        final Resources res = activity.getResources();
+        final ContentValues cv = new ContentValues();
+        final File file = new File(fileName);
+        final long current = System.currentTimeMillis();
+        final long modDate = file.lastModified();
+        final Date date = new Date(current);
+        final String dateTemplate = res.getString(R.string.audio_db_title_format);
+        final SimpleDateFormat formatter = new SimpleDateFormat(dateTemplate, Locale.getDefault());
+        final String title = formatter.format(date);
+        final long sampleLengthMillis = 1;
+        // Lets label the recorded audio file as NON-MUSIC so that the file
+        // won't be displayed automatically, except for in the playlist.
+        cv.put(MediaStore.Audio.Media.IS_MUSIC, "0");
+
+        cv.put(MediaStore.Audio.Media.TITLE, title);
+        cv.put(MediaStore.Audio.Media.DATA, file.getAbsolutePath());
+        cv.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
+        cv.put(MediaStore.Audio.Media.DATE_MODIFIED, (int) (modDate / 1000));
+        cv.put(MediaStore.Audio.Media.DURATION, sampleLengthMillis);
+        cv.put(MediaStore.Audio.Media.MIME_TYPE, "audio/*");
+        cv.put(MediaStore.Audio.Media.ARTIST, res.getString(R.string.audio_db_artist_name));
+        cv.put(MediaStore.Audio.Media.ALBUM, res.getString(R.string.audio_db_album_name));
+
+        Log.d(TAG, "Inserting audio record: " + cv.toString());
+
+        final ContentResolver resolver = activity.getContentResolver();
+        final Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Log.d(TAG, "ContentURI: " + base);
+
+        mAudioRecordUri = resolver.insert(base, cv);
+        if (mAudioRecordUri == null) {
+            return null;
+        }
+        activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mAudioRecordUri));
+        return mAudioRecordUri;
     }
 }

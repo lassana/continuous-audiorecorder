@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">continuous-audiorecorder</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="button_start_record">Start record</string>
-    <string name="button_pause_record">Pause record</string>
-    <string name="button_play_record">Play record</string>
+    <string name="button_start_record">Start</string>
+    <string name="button_pause_record">Pause</string>
+    <string name="button_play_record">Play</string>
     <string name="toast_error_audio_recorder">Audio recorder error: %1$s</string>
+    <string name="audio_db_title_format"><xliff:g id="format">yyyy-MM-dd HH:mm:ss</xliff:g></string>
+    <string name="audio_db_artist_name">Your recordings</string>
+    <string name="audio_db_album_name">Audio recordings</string>
 
 </resources>

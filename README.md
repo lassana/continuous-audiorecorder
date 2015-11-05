@@ -3,6 +3,8 @@
 Implementation of the missing feature in Android SDK: audio recorder with a pause. Based on [mp4parser](https://code.google.com/p/mp4parser/).
 
 Build status: [![Build Status](https://drone.io/github.com/lassana/continuous-audiorecorder/status.png)](https://drone.io/github.com/lassana/continuous-audiorecorder/latest)
+Latest version: [ ![Download](https://api.bintray.com/packages/lassana/maven/continuous-audiorecorder/images/download.svg) ](https://bintray.com/lassana/maven/continuous-audiorecorder/_latestVersion)
+
 
 [Latest sample build](https://drone.io/github.com/lassana/continuous-audiorecorder/files)
 
@@ -15,7 +17,7 @@ Grab the latest version from Bintray:
     }
     dependencies {
         compile "com.googlecode.mp4parser:isoparser:1.0.2"
-        compile "com.github.lassana:continuous-audiorecorder:1.0.0"
+        compile "com.github.lassana:continuous-audiorecorder:1.1.0"
     }
 
 or just copy the `recorder` module into your project and add a new dependency:

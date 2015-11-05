@@ -15,8 +15,8 @@ repositories {
 dependencies {
     compile "com.android.support:support-v4:21.0.3"
     compile "com.googlecode.mp4parser:isoparser:1.0.2"
-    //compile "com.github.lassana:continuous-audiorecorder:1.0.0"
-    compile project(":recorder")
+    compile "com.github.lassana:continuous-audiorecorder:1.1.0"
+    //compile project(":recorder")
     androidTestCompile "com.jayway.android.robotium:robotium-solo:4.3.1"
 }
 

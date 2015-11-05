@@ -1,15 +1,22 @@
 package com.github.lassana.continuous_audiorecorder.fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +43,7 @@ import java.util.Locale;
 public class MainFragment extends Fragment {
 
     private static final String TAG = "MainFragment";
+    private static final int REQUEST_CODE_PERMISSIONS = 0x1;
 
     private Button mStartButton;
     private Button mPauseButton;
@@ -53,7 +61,7 @@ public class MainFragment extends Fragment {
             switch (v.getId()) {
                 case R.id.buttonStartRecording:
                     v.setEnabled(false);
-                    start();
+                    tryStart();
                     break;
                 case R.id.buttonPauseRecording:
                     v.setEnabled(false);
@@ -113,7 +121,7 @@ public class MainFragment extends Fragment {
         mPlayButton = (Button) view.findViewById(R.id.buttonPlayRecording);
         mPlayButton.setOnClickListener(mOnClickListener);
 
-        invalidateView();
+        invalidateViews();
     }
 
     private String getNextFileName() {
@@ -125,7 +133,7 @@ public class MainFragment extends Fragment {
                 + ".mp4";
     }
 
-    private void invalidateView() {
+    private void invalidateViews() {
         switch (mAudioRecorder.getStatus()) {
             case STATUS_UNKNOWN:
                 mCassetteImage.clearAnimation();
@@ -157,17 +165,66 @@ public class MainFragment extends Fragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    private void tryStart() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final int checkAudio = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
+            if (checkAudio != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
+                    showNeedPermissionsDialog();
+                } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    showNeedPermissionsDialog();
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            REQUEST_CODE_PERMISSIONS);
+                }
+            } else {
+                start();
+            }
+        } else {
+            start();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_PERMISSIONS:
+                boolean userAllowed = true;
+                for (final int result : grantResults) {
+                    userAllowed &= result == PackageManager.PERMISSION_GRANTED;
+                }
+                if (userAllowed) {
+                    start();
+                } else {
+                    /*
+                     * Cannot show dialog from here
+                     * https://code.google.com/p/android-developer-preview/issues/detail?id=2823
+                     */
+                    showNeedPermissionsDialog();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void showNeedPermissionsDialog() {
+        invalidateViews();
+    }
+
     private void start() {
         mAudioRecorder.start(new AudioRecorder.OnStartListener() {
             @Override
             public void onStarted() {
-                invalidateView();
+                invalidateViews();
             }
 
             @Override
             public void onException(Exception e) {
                 getActivity().setResult(Activity.RESULT_CANCELED);
-                invalidateView();
+                invalidateViews();
                 Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
                         Toast.LENGTH_SHORT).show();
             }
@@ -183,13 +240,13 @@ public class MainFragment extends Fragment {
                 getActivity().setResult(Activity.RESULT_OK,
                         //new Intent().setData(Uri.parse(mActiveRecordFileName)));
                         new Intent().setData(saveCurrentRecordToMediaDB(mActiveRecordFileName)));
-                invalidateView();
+                invalidateViews();
             }
 
             @Override
             public void onException(Exception e) {
                 getActivity().setResult(Activity.RESULT_CANCELED);
-                invalidateView();
+                invalidateViews();
                 Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
                         Toast.LENGTH_SHORT).show();
             }

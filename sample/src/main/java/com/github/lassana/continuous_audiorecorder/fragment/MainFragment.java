@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.github.lassana.continuous_audiorecorder.R;
 import com.github.lassana.continuous_audiorecorder.RecorderApplication;
 import com.github.lassana.recorder.AudioRecorder;
+import com.github.lassana.recorder.AudioRecorderBuilder;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -51,9 +52,11 @@ public class MainFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.buttonStartRecording:
+                    v.setEnabled(false);
                     start();
                     break;
                 case R.id.buttonPauseRecording:
+                    v.setEnabled(false);
                     pause();
                     break;
                 case R.id.buttonPlayRecording:
@@ -66,17 +69,41 @@ public class MainFragment extends Fragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAudioRecorder.isRecording()) {
+            mAudioRecorder.cancel();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+        }
+        super.onDestroy();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAudioRecorder = savedInstanceState == null
-                ? RecorderApplication.getApplication(getActivity()).createRecorder(getNextFileName())
-                : RecorderApplication.getApplication(getActivity()).getRecorder();
+        final RecorderApplication application = RecorderApplication.getApplication(getActivity());
+        mAudioRecorder = application.getRecorder();
+        if (mAudioRecorder == null
+                || mAudioRecorder.getStatus() == AudioRecorder.Status.STATUS_UNKNOWN) {
+            mAudioRecorder = AudioRecorderBuilder.with(application)
+                    .fileName(getNextFileName())
+                    .config(AudioRecorder.MediaRecorderConfig.DEFAULT)
+                    .loggable()
+                    .build();
+            application.setRecorder(mAudioRecorder);
+        }
 
         mCassetteImage = (ImageView) view.findViewById(R.id.image_cassette);
         mStartButton = (Button) view.findViewById(R.id.buttonStartRecording);
@@ -90,7 +117,8 @@ public class MainFragment extends Fragment {
     }
 
     private String getNextFileName() {
-        return Environment.getExternalStorageDirectory()
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                .getAbsolutePath()
                 + File.separator
                 + "Record_"
                 + System.currentTimeMillis()
@@ -179,7 +207,8 @@ public class MainFragment extends Fragment {
     }
 
     /**
-     * Creates new item in the system'm media database.
+     * Creates new item in the system's media database.
+     *
      * @see <a href="https://github.com/android/platform_packages_apps_soundrecorder/blob/master/src/com/android/soundrecorder/SoundRecorder.java">Android Recorder source</a>
      */
     public Uri saveCurrentRecordToMediaDB(final String fileName) {

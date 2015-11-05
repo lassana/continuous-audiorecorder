@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,23 +17,25 @@ import java.io.IOException;
  */
 public class AudioRecorder {
 
-    public static enum Status {
+    private static final String TAG = "AudioRecorder";
+
+    public enum Status {
         STATUS_UNKNOWN,
         STATUS_READY_TO_RECORD,
         STATUS_RECORDING,
         STATUS_RECORD_PAUSED
     }
 
-    public static interface OnException {
-        public void onException(Exception e);
+    public interface OnException {
+        void onException(Exception e);
     }
 
-    public static interface OnStartListener extends OnException {
-        public void onStarted();
+    public interface OnStartListener extends OnException {
+        void onStarted();
     }
 
-    public static interface OnPauseListener extends OnException {
-        public void onPaused(String activeRecordFileName);
+    public interface OnPauseListener extends OnException {
+        void onPaused(String activeRecordFileName);
     }
 
     /**
@@ -44,22 +49,23 @@ public class AudioRecorder {
         private final int mAudioEncoder;
 
         public static final MediaRecorderConfig DEFAULT =
-                new MediaRecorderConfig(64 * 1024,              /* 64 Kib per second                                */
-                        2,                                      /* Stereo                                           */
-                        MediaRecorder.AudioSource.DEFAULT,      /* Default audio source (usually, phone microphone) */
-                        ApiHelper.DEFAULT_AUDIO_ENCODER);       /* Default encoder for target Android version       */
+                new MediaRecorderConfig(
+                        /* 64 Kib per second            */
+                        64 * 1024,
+                        /* Stereo                       */
+                        2,
+                        /* Default audio source (usually, device microphone)  */
+                        MediaRecorder.AudioSource.DEFAULT,
+                        /* Default encoder for the target Android version   */
+                        ApiHelper.DEFAULT_AUDIO_ENCODER);
 
         /**
          * Constructor.
          *
-         * @param audioEncodingBitRate
-         * Used for {@link android.media.MediaRecorder#setAudioEncodingBitRate}
-         * @param audioChannels
-         * Used for {@link android.media.MediaRecorder#setAudioChannels}
-         * @param audioSource
-         * Used for {@link android.media.MediaRecorder#setAudioSource}
-         * @param audioEncoder
-         * Used for {@link android.media.MediaRecorder#setAudioEncoder}
+         * @param audioEncodingBitRate Used for {@link android.media.MediaRecorder#setAudioEncodingBitRate}
+         * @param audioChannels        Used for {@link android.media.MediaRecorder#setAudioChannels}
+         * @param audioSource          Used for {@link android.media.MediaRecorder#setAudioSource}
+         * @param audioEncoder         Used for {@link android.media.MediaRecorder#setAudioEncoder}
          */
         public MediaRecorderConfig(int audioEncodingBitRate, int audioChannels, int audioSource, int audioEncoder) {
             mAudioEncodingBitRate = audioEncodingBitRate;
@@ -121,7 +127,7 @@ public class AudioRecorder {
             } catch (Exception e) {
                 exception = e;
             }
-            if ( exception == null ) {
+            if (exception == null) {
                 appendToFile(mTargetRecordFileName, getTemporaryFileName());
             }
             return exception;
@@ -145,78 +151,106 @@ public class AudioRecorder {
     private final String mTargetRecordFileName;
     private final Context mContext;
     private final MediaRecorderConfig mMediaRecorderConfig;
+    private final boolean mIsLoggable;
 
-    private AudioRecorder(final Context context,
-                          final String targetRecordFileName,
-                          final MediaRecorderConfig mediaRecorderConfig) {
+    /* package-local */ AudioRecorder(@NonNull final Context context,
+                          @NonNull final String targetRecordFileName,
+                          @NonNull final MediaRecorderConfig mediaRecorderConfig,
+                          final boolean isLoggable) {
         mTargetRecordFileName = targetRecordFileName;
         mContext = context;
         mMediaRecorderConfig = mediaRecorderConfig;
-        mStatus = Status.STATUS_UNKNOWN;
+        mIsLoggable = isLoggable;
+
+        mStatus = Status.STATUS_READY_TO_RECORD;
     }
 
     /**
-     * Returns the ready-to-use AudioRecorder.
+     * Returns a ready-to-use AudioRecorder.
      * Uses {@link com.github.lassana.recorder.AudioRecorder.MediaRecorderConfig#DEFAULT} as
      * {@link android.media.MediaRecorder} config.
+     *
+     * @deprecated Use AudioRecorderBuilder instead.
      */
-    public static AudioRecorder build(final Context context,
-                                      final String targetFileName) {
+    public static AudioRecorder build(@NonNull final Context context,
+                                      @NonNull final String targetFileName) {
         return build(context, targetFileName, MediaRecorderConfig.DEFAULT);
     }
 
     /**
-     * Returns the ready-to-use AudioRecorder.
+     * Returns a ready-to-use AudioRecorder.
+     *
+     * @deprecated Use AudioRecorderBuilder instead.
      */
-    public static AudioRecorder build(final Context context,
-                                      final String targetFileName,
-                                      final MediaRecorderConfig mediaRecorderConfig) {
-        AudioRecorder rvalue = new AudioRecorder(context, targetFileName, mediaRecorderConfig);
+    public static AudioRecorder build(@NonNull final Context context,
+                                      @NonNull final String targetFileName,
+                                      @NonNull final MediaRecorderConfig mediaRecorderConfig) {
+        AudioRecorder rvalue = new AudioRecorder(
+                context,
+                targetFileName,
+                mediaRecorderConfig,
+                false);
         rvalue.mStatus = Status.STATUS_READY_TO_RECORD;
         return rvalue;
     }
 
     /**
-     * Continues existing record or starts new one.
+     * Continues an existing record or starts a new one.
      */
     @SuppressLint("NewApi")
-    public void start(final OnStartListener listener) {
+    public void start(@NonNull final OnStartListener listener) {
         StartRecordTask task = new StartRecordTask();
         task.execute(listener);
 
     }
 
     /**
-     * Pauses active recording.
+     * Pauses an active recording.
      */
     @SuppressLint("NewApi")
-    public void pause(final OnPauseListener listener) {
+    public void pause(@NonNull final OnPauseListener listener) {
         PauseRecordTask task = new PauseRecordTask();
         task.execute(listener);
-
     }
 
+    /**
+     * Returns the current recording status.
+     *
+     * @see AudioRecorder#Status
+     */
     public Status getStatus() {
         return mStatus;
     }
 
+    /**
+     * Returns the current record filename.
+     */
     public String getRecordFileName() {
         return mTargetRecordFileName;
     }
 
+    /**
+     * Returns true if record is started, false if not.
+     */
     public boolean isRecording() {
         return mStatus == Status.STATUS_RECORDING;
     }
 
+    /**
+     * Returns true if record can be started, false if not.
+     */
     public boolean isReady() {
         return mStatus == Status.STATUS_READY_TO_RECORD;
     }
 
+    /**
+     * Returns true if record is paused, false if not.
+     */
     public boolean isPaused() {
         return mStatus == Status.STATUS_RECORD_PAUSED;
     }
 
-    private void setStatus(final Status status) {
+    private void setStatus(@NonNull final Status status) {
         mStatus = status;
     }
 
@@ -224,7 +258,31 @@ public class AudioRecorder {
         return mContext.getCacheDir().getAbsolutePath() + File.separator + "tmprecord";
     }
 
-    private void appendToFile(final String targetFileName, final String newFileName) {
+    private void appendToFile(@NonNull final String targetFileName, @NonNull final String newFileName) {
         Mp4ParserWrapper.append(targetFileName, newFileName);
     }
+
+    /**
+     * Drops the current recording.
+     */
+    public void cancel() {
+        try {
+            if (mMediaRecorder != null) {
+                mMediaRecorder.stop();
+                mMediaRecorder.release();
+            }
+        } catch (Exception e) {
+            error("Exception during record cancelling", e);
+        }
+        mStatus = Status.STATUS_UNKNOWN;
+    }
+
+    private void debug(@NonNull final String msg, @Nullable final Exception e) {
+        if (mIsLoggable) Log.d(TAG, msg, e);
+    }
+
+    private void error(@NonNull final String msg, @Nullable final Exception e) {
+        if (mIsLoggable) Log.e(TAG, msg, e);
+    }
+
 }

@@ -18,7 +18,7 @@ Grab the latest version from Bintray:
         compile "com.github.lassana:continuous-audiorecorder:1.0.0"
     }
 
-or just copy the `recorder` module into your project and add new dependency:
+or just copy the `recorder` module into your project and add a new dependency:
 
     dependencies {
         compile project(':recorder')
@@ -28,7 +28,11 @@ or just copy the `recorder` module into your project and add new dependency:
 
 Start recording:
 
-    AudioRecorder recorder = AudioRecorder.build(context, filename);
+    AudioRecorder recorder = AudioRecorderBuilder.with(context)
+                                                 .fileName(filename)
+                                                 .config(AudioRecorder.MediaRecorderConfig.DEFAULT)
+                                                 .loggable()
+                                                 .build();
 
     recorder.start(new AudioRecorder.OnStartListener() {
         @Override
@@ -56,7 +60,7 @@ Pause:
         }
     });
 
-Use `start()` method to continue recording.
+The `start()` method continues existing record also.
 
 ## [License](https://github.com/lassana/continuous-audiorecorder/blob/master/LICENSE)
 

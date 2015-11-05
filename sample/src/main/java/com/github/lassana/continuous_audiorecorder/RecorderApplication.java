@@ -2,6 +2,8 @@ package com.github.lassana.continuous_audiorecorder;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
+
 import com.github.lassana.recorder.AudioRecorder;
 
 /**
@@ -10,7 +12,7 @@ import com.github.lassana.recorder.AudioRecorder;
  */
 public class RecorderApplication extends Application {
 
-    public static RecorderApplication getApplication(Context context) {
+    public static RecorderApplication getApplication(@NonNull Context context) {
         if (context instanceof RecorderApplication) {
             return (RecorderApplication) context;
         }
@@ -19,9 +21,8 @@ public class RecorderApplication extends Application {
 
     private AudioRecorder mAudioRecorder;
 
-    public AudioRecorder createRecorder(String targetFileName) {
-        mAudioRecorder = AudioRecorder.build(this, targetFileName);
-        return mAudioRecorder;
+    public void setRecorder(@NonNull AudioRecorder recorder) {
+        mAudioRecorder = recorder;
     }
 
     public AudioRecorder getRecorder() {

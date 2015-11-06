@@ -7,9 +7,10 @@
     <string name="button_start_record">Start</string>
     <string name="button_pause_record">Pause</string>
     <string name="button_play_record">Play</string>
-    <string name="toast_error_audio_recorder">Audio recorder error: %1$s</string>
+    <string name="error_audio_recorder">Audio recorder error: %1$s</string>
     <string name="audio_db_title_format"><xliff:g id="format">yyyy-MM-dd HH:mm:ss</xliff:g></string>
     <string name="audio_db_artist_name">Your recordings</string>
     <string name="audio_db_album_name">Audio recordings</string>
+    <string name="error_no_permissions">The recorder requires `RECORD_AUDIO` and `WRITE_EXTERNAL_STORAGE` permissions.</string>
 
 </resources>

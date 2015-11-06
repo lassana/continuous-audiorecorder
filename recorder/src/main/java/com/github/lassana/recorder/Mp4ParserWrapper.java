@@ -41,7 +41,7 @@ public class Mp4ParserWrapper {
                 append(mainFileName, anotherFileName, tmpFileName);
                 copyFile(tmpFileName, mainFileName);
                 rvalue = anotherFile.delete() && new File(tmpFileName).delete();
-            } else if (targetFile.createNewFile()) {
+            } else if (targetFile.getParentFile().mkdirs() && targetFile.createNewFile()) {
                 copyFile(anotherFileName, mainFileName);
                 rvalue = anotherFile.delete();
             }

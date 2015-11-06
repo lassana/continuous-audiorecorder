@@ -15,6 +15,7 @@ repositories {
 dependencies {
     compile "com.android.support:support-v4:23.1.0"
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'
     compile "com.googlecode.mp4parser:isoparser:1.0.2"
     //compile "com.github.lassana:continuous-audiorecorder:1.0.0"
     compile project(":recorder")

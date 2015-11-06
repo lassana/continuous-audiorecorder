@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -24,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.github.lassana.continuous_audiorecorder.R;
 import com.github.lassana.continuous_audiorecorder.RecorderApplication;
@@ -169,14 +169,16 @@ public class MainFragment extends Fragment {
     private void tryStart() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final int checkAudio = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
-            if (checkAudio != PackageManager.PERMISSION_GRANTED) {
+            final int checkStorage = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (checkAudio != PackageManager.PERMISSION_GRANTED || checkStorage != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
-                    showNeedPermissionsDialog();
+                    showNeedPermissionsMessage();
                 } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    showNeedPermissionsDialog();
+                    showNeedPermissionsMessage();
                 } else {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    requestPermissions(new String[]{
+                                    Manifest.permission.RECORD_AUDIO,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             REQUEST_CODE_PERMISSIONS);
                 }
             } else {
@@ -202,7 +204,7 @@ public class MainFragment extends Fragment {
                      * Cannot show dialog from here
                      * https://code.google.com/p/android-developer-preview/issues/detail?id=2823
                      */
-                    showNeedPermissionsDialog();
+                    showNeedPermissionsMessage();
                 }
                 break;
             default:
@@ -210,8 +212,23 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void showNeedPermissionsDialog() {
+    private void showNeedPermissionsMessage() {
         invalidateViews();
+        message(getString(R.string.error_no_permissions));
+    }
+
+    private void message(String message) {
+        final View root = getView();
+        if (root != null) {
+            final Snackbar snackbar = Snackbar.make(root, message, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
+        }
     }
 
     private void start() {
@@ -225,8 +242,7 @@ public class MainFragment extends Fragment {
             public void onException(Exception e) {
                 getActivity().setResult(Activity.RESULT_CANCELED);
                 invalidateViews();
-                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
-                        Toast.LENGTH_SHORT).show();
+                message(getString(R.string.error_audio_recorder, e));
             }
         });
     }
@@ -247,8 +263,7 @@ public class MainFragment extends Fragment {
             public void onException(Exception e) {
                 getActivity().setResult(Activity.RESULT_CANCELED);
                 invalidateViews();
-                Toast.makeText(getActivity(), getString(R.string.toast_error_audio_recorder, e),
-                        Toast.LENGTH_SHORT).show();
+                message(getString(R.string.error_audio_recorder, e));
             }
         });
     }

@@ -172,6 +172,7 @@ public class AudioRecorder {
      *
      * @deprecated Use AudioRecorderBuilder instead.
      */
+    @Deprecated
     public static AudioRecorder build(@NonNull final Context context,
                                       @NonNull final String targetFileName) {
         return build(context, targetFileName, MediaRecorderConfig.DEFAULT);
@@ -182,6 +183,7 @@ public class AudioRecorder {
      *
      * @deprecated Use AudioRecorderBuilder instead.
      */
+    @Deprecated
     public static AudioRecorder build(@NonNull final Context context,
                                       @NonNull final String targetFileName,
                                       @NonNull final MediaRecorderConfig mediaRecorderConfig) {

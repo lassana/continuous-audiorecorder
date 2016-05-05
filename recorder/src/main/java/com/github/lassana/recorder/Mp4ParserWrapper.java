@@ -23,7 +23,7 @@ import java.util.List;
  * @since 8/25/13
  */
 public class Mp4ParserWrapper {
-
+    private Mp4ParserWrapper(){}
     public static final String TAG = "Mp4ParserWrapper";
 
     public static final int FILE_BUFFER_SIZE = 1024;

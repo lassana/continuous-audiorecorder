@@ -116,7 +116,9 @@ public class AudioRecorder {
 
     class PauseRecordTask extends AsyncTask<OnPauseListener, Void, Exception> {
         private OnPauseListener mOnPauseListener;
-
+        private void appendToFile(@NonNull final String targetFileName, @NonNull final String newFileName) {
+            Mp4ParserWrapper.append(targetFileName, newFileName);
+        }
         @Override
         protected Exception doInBackground(OnPauseListener... params) {
             mOnPauseListener = params[0];
@@ -258,9 +260,7 @@ public class AudioRecorder {
         return mContext.getCacheDir().getAbsolutePath() + File.separator + "tmprecord";
     }
 
-    private void appendToFile(@NonNull final String targetFileName, @NonNull final String newFileName) {
-        Mp4ParserWrapper.append(targetFileName, newFileName);
-    }
+
 
     /**
      * Drops the current recording.

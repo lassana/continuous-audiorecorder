@@ -48,7 +48,7 @@ public final class AudioRecorderBuilder {
      */
     public AudioRecorder build() {
         if (mFileName == null) {
-            throw new RuntimeException("Target filename is not setted: use `#fileName` method");
+            throw new RuntimeException("Target filename is not set: use `#fileName` method");
         }
         return new AudioRecorder(mContext, mFileName, mConfig, mIsLoggable);
     }

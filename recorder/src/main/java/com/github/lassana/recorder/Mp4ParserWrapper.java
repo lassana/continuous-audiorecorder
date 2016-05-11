@@ -22,11 +22,14 @@ import java.util.List;
  * @author Nikolai Doronin {@literal <lassana.nd@gmail.com>}
  * @since 8/25/13
  */
-public class Mp4ParserWrapper {
-    private Mp4ParserWrapper(){}
+public final class Mp4ParserWrapper {
+
     public static final String TAG = "Mp4ParserWrapper";
 
     public static final int FILE_BUFFER_SIZE = 1024;
+
+    private Mp4ParserWrapper() {
+    }
 
     /**
      * Appends mp4 audios/videos: {@code anotherFileName} to {@code mainFileName}.
@@ -46,7 +49,7 @@ public class Mp4ParserWrapper {
                 rvalue = anotherFile.delete();
             }
         } catch (IOException e) {
-            Log.e(TAG, "Append two mp4 files exception", e);
+            Log.e(TAG, "Appending two mp4 files failed with exception", e);
         }
         return rvalue;
     }

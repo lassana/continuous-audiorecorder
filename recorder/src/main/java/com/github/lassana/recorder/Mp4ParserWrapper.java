@@ -45,14 +45,14 @@ public final class Mp4ParserWrapper {
                 copyFile(tmpFileName, mainFileName);
                 rvalue = anotherFile.delete() && new File(tmpFileName).delete();
             } else {
-                //noinspection ResultOfMethodCallIgnored
-                targetFile.getParentFile().mkdirs();
-                //noinspection ResultOfMethodCallIgnored
-                targetFile.createNewFile();
-                if (targetFile.exists()) {
+                if (targetFile.getParentFile().mkdirs()
+                        && targetFile.createNewFile()
+                        && targetFile.exists()) {
                     copyFile(anotherFileName, mainFileName);
                     rvalue = anotherFile.delete();
-                } else throw new IOException();
+                } else {
+                    rvalue = false;
+                }
             }
         } catch (IOException e) {
             Log.e(TAG, "Appending two mp4 files failed with exception", e);

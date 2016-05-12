@@ -17,7 +17,7 @@ Grab the latest version from Bintray:
     }
     dependencies {
         compile "com.googlecode.mp4parser:isoparser:1.0.2"
-        compile "com.github.lassana:continuous-audiorecorder:1.1.0"
+        compile "com.github.lassana:continuous-audiorecorder:1.3.0"
     }
 
 or just copy the `recorder` module into your project and add a new dependency:

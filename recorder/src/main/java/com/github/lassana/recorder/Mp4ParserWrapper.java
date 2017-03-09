@@ -33,6 +33,11 @@ public final class Mp4ParserWrapper {
 
     /**
      * Appends mp4 audios/videos: {@code anotherFileName} to {@code mainFileName}.
+     *
+     * @param mainFileName The first file path.
+     * @param anotherFileName The second file path.
+     *
+     * @return true if the operation was made successfully.
      */
     public static boolean append(String mainFileName, String anotherFileName) {
         try {

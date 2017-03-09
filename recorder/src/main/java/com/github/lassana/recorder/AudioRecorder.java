@@ -170,6 +170,10 @@ public class AudioRecorder {
      * Uses {@link com.github.lassana.recorder.AudioRecorder.MediaRecorderConfig#DEFAULT} as
      * {@link android.media.MediaRecorder} config.
      *
+     * @param context An Android context instance.
+     * @param targetFileName A filename (full path) of a record.
+     * @return A configured {@link AudioRecorder} instance.
+     *
      * @deprecated Use AudioRecorderBuilder instead.
      */
     @Deprecated
@@ -180,6 +184,11 @@ public class AudioRecorder {
 
     /**
      * Returns a ready-to-use AudioRecorder.
+     *
+     * @param context An Android context instance.
+     * @param targetFileName A filename (full path) of a record.
+     * @param mediaRecorderConfig A record config.
+     * @return A configured {@link AudioRecorder} instance.
      *
      * @deprecated Use AudioRecorderBuilder instead.
      */
@@ -198,6 +207,8 @@ public class AudioRecorder {
 
     /**
      * Continues an existing record or starts a new one.
+     *
+     * @param listener The listener instance.
      */
     @SuppressLint("NewApi")
     public void start(@NonNull final OnStartListener listener) {
@@ -208,6 +219,8 @@ public class AudioRecorder {
 
     /**
      * Pauses an active recording.
+     *
+     * @param listener The listener instance.
      */
     @SuppressLint("NewApi")
     public void pause(@NonNull final OnPauseListener listener) {
@@ -218,7 +231,9 @@ public class AudioRecorder {
     /**
      * Returns the current recording status.
      *
-     * @see AudioRecorder#Status
+     * @return The current recorder status.
+     *
+     * @see AudioRecorder.Status
      */
     public Status getStatus() {
         return mStatus;
@@ -226,6 +241,8 @@ public class AudioRecorder {
 
     /**
      * Returns the current record filename.
+     *
+     * @return The current filename (the full path).
      */
     public String getRecordFileName() {
         return mTargetRecordFileName;
@@ -233,6 +250,8 @@ public class AudioRecorder {
 
     /**
      * Returns true if record is started, false if not.
+     *
+     * @return true if record is started.
      */
     public boolean isRecording() {
         return mStatus == Status.STATUS_RECORDING;
@@ -240,6 +259,8 @@ public class AudioRecorder {
 
     /**
      * Returns true if record can be started, false if not.
+     *
+     * @return true if record can be started.
      */
     public boolean isReady() {
         return mStatus == Status.STATUS_READY_TO_RECORD;
@@ -247,6 +268,8 @@ public class AudioRecorder {
 
     /**
      * Returns true if record is paused, false if not.
+     *
+     * @return true if record is paused.
      */
     public boolean isPaused() {
         return mStatus == Status.STATUS_RECORD_PAUSED;

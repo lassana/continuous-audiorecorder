@@ -45,6 +45,8 @@ public final class AudioRecorderBuilder {
      * Uses {@link com.github.lassana.recorder.AudioRecorder.MediaRecorderConfig#DEFAULT} as
      * {@link android.media.MediaRecorder} config by default.<p>
      * Logs are turned off by default.
+     *
+     * @return Created {@link AudioRecorder instance}.
      */
     public AudioRecorder build() {
         if (mFileName == null) {

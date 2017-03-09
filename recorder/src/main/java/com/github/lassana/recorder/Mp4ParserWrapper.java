@@ -35,7 +35,6 @@ public final class Mp4ParserWrapper {
      * Appends mp4 audios/videos: {@code anotherFileName} to {@code mainFileName}.
      */
     public static boolean append(String mainFileName, String anotherFileName) {
-        boolean rvalue = false;
         try {
             File targetFile = new File(mainFileName);
             File anotherFile = new File(anotherFileName);
@@ -43,21 +42,25 @@ public final class Mp4ParserWrapper {
                 String tmpFileName = mainFileName + ".tmp";
                 append(mainFileName, anotherFileName, tmpFileName);
                 copyFile(tmpFileName, mainFileName);
-                rvalue = anotherFile.delete() && new File(tmpFileName).delete();
+                return anotherFile.delete() && new File(tmpFileName).delete();
             } else {
-                if ((targetFile.getParentFile().mkdirs()
-                        && targetFile.createNewFile())
-                        || targetFile.exists()) {
-                    copyFile(anotherFileName, mainFileName);
-                    rvalue = anotherFile.delete();
-                } else {
-                    rvalue = false;
+                if (!targetFile.exists()) {
+                    if (!targetFile.getParentFile().exists()) {
+                        if (!targetFile.getParentFile().mkdirs()) {
+                            return false;
+                        }
+                    }
+                    if (!targetFile.createNewFile()) {
+                        return false;
+                    }
                 }
+                copyFile(anotherFileName, mainFileName);
+                return anotherFile.delete();
             }
         } catch (IOException e) {
             Log.e(TAG, "Appending two mp4 files failed with exception", e);
+            return false;
         }
-        return rvalue;
     }
 
 

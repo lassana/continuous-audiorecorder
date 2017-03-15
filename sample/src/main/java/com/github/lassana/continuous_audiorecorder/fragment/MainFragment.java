@@ -56,6 +56,61 @@ public class MainFragment extends Fragment {
     private AudioRecorder mAudioRecorder;
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+
+        @TargetApi(Build.VERSION_CODES.M)
+        private void tryStart() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                final int checkAudio = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
+                final int checkStorage = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (checkAudio != PackageManager.PERMISSION_GRANTED || checkStorage != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
+                        showNeedPermissionsMessage();
+                    } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        showNeedPermissionsMessage();
+                    } else {
+                        requestPermissions(new String[]{
+                                        Manifest.permission.RECORD_AUDIO,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                REQUEST_CODE_PERMISSIONS);
+                    }
+                } else {
+                    start();
+                }
+            } else {
+                start();
+            }
+        }
+        private void pause() {
+            mAudioRecorder.pause(new AudioRecorder.OnPauseListener() {
+                @Override
+                public void onPaused(String activeRecordFileName) {
+                    mActiveRecordFileName = activeRecordFileName;
+
+                    getActivity().setResult(Activity.RESULT_OK,
+                            //new Intent().setData(Uri.parse(mActiveRecordFileName)));
+                            new Intent().setData(saveCurrentRecordToMediaDB(mActiveRecordFileName)));
+                    invalidateViews();
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    invalidateViews();
+                    message(getString(R.string.error_audio_recorder, e));
+                }
+            });
+        }
+
+        private void play() {
+            File file = new File(mActiveRecordFileName);
+            if (file.exists()) {
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file), "audio/*");
+                startActivity(intent);
+            }
+        }
+
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -165,29 +220,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private void tryStart() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final int checkAudio = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO);
-            final int checkStorage = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (checkAudio != PackageManager.PERMISSION_GRANTED || checkStorage != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
-                    showNeedPermissionsMessage();
-                } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    showNeedPermissionsMessage();
-                } else {
-                    requestPermissions(new String[]{
-                                    Manifest.permission.RECORD_AUDIO,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            REQUEST_CODE_PERMISSIONS);
-                }
-            } else {
-                start();
-            }
-        } else {
-            start();
-        }
-    }
+
 
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
@@ -247,36 +280,7 @@ public class MainFragment extends Fragment {
         });
     }
 
-    private void pause() {
-        mAudioRecorder.pause(new AudioRecorder.OnPauseListener() {
-            @Override
-            public void onPaused(String activeRecordFileName) {
-                mActiveRecordFileName = activeRecordFileName;
 
-                getActivity().setResult(Activity.RESULT_OK,
-                        //new Intent().setData(Uri.parse(mActiveRecordFileName)));
-                        new Intent().setData(saveCurrentRecordToMediaDB(mActiveRecordFileName)));
-                invalidateViews();
-            }
-
-            @Override
-            public void onException(Exception e) {
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                invalidateViews();
-                message(getString(R.string.error_audio_recorder, e));
-            }
-        });
-    }
-
-    private void play() {
-        File file = new File(mActiveRecordFileName);
-        if (file.exists()) {
-            Intent intent = new Intent();
-            intent.setAction(android.content.Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), "audio/*");
-            startActivity(intent);
-        }
-    }
 
     /**
      * Creates new item in the system's media database.

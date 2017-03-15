@@ -11,7 +11,7 @@ import com.github.lassana.recorder.AudioRecorder;
  * @since 11/26/14.
  */
 public class RecorderApplication extends Application {
-
+    private AudioRecorder mAudioRecorder;
     public static RecorderApplication getApplication(@NonNull Context context) {
         if (context instanceof RecorderApplication) {
             return (RecorderApplication) context;
@@ -19,7 +19,7 @@ public class RecorderApplication extends Application {
         return (RecorderApplication) context.getApplicationContext();
     }
 
-    private AudioRecorder mAudioRecorder;
+
 
     public void setRecorder(@NonNull AudioRecorder recorder) {
         mAudioRecorder = recorder;

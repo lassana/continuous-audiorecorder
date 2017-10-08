@@ -83,13 +83,6 @@ public class AudioRecorder {
         @Override
         protected Exception doInBackground(OnStartListener... params) {
             this.mOnStartListener = params[0];
-            mMediaRecorder = new MediaRecorder();
-            mMediaRecorder.setAudioEncodingBitRate(mMediaRecorderConfig.mAudioEncodingBitRate);
-            mMediaRecorder.setAudioChannels(mMediaRecorderConfig.mAudioChannels);
-            mMediaRecorder.setAudioSource(mMediaRecorderConfig.mAudioSource);
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mMediaRecorder.setOutputFile(getTemporaryFileName());
-            mMediaRecorder.setAudioEncoder(mMediaRecorderConfig.mAudioEncoder);
 
             Exception exception = null;
             try {
@@ -154,9 +147,9 @@ public class AudioRecorder {
     private final boolean mIsLoggable;
 
     /* package-local */ AudioRecorder(@NonNull final Context context,
-                          @NonNull final String targetRecordFileName,
-                          @NonNull final MediaRecorderConfig mediaRecorderConfig,
-                          final boolean isLoggable) {
+                                      @NonNull final String targetRecordFileName,
+                                      @NonNull final MediaRecorderConfig mediaRecorderConfig,
+                                      final boolean isLoggable) {
         mTargetRecordFileName = targetRecordFileName;
         mContext = context;
         mMediaRecorderConfig = mediaRecorderConfig;
@@ -213,8 +206,16 @@ public class AudioRecorder {
     @SuppressLint("NewApi")
     public void start(@NonNull final OnStartListener listener) {
         StartRecordTask task = new StartRecordTask();
-        task.execute(listener);
 
+        mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setAudioEncodingBitRate(mMediaRecorderConfig.mAudioEncodingBitRate);
+        mMediaRecorder.setAudioChannels(mMediaRecorderConfig.mAudioChannels);
+        mMediaRecorder.setAudioSource(mMediaRecorderConfig.mAudioSource);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mMediaRecorder.setOutputFile(getTemporaryFileName());
+        mMediaRecorder.setAudioEncoder(mMediaRecorderConfig.mAudioEncoder);
+
+        task.execute(listener);
     }
 
     /**
@@ -246,6 +247,14 @@ public class AudioRecorder {
      */
     public String getRecordFileName() {
         return mTargetRecordFileName;
+    }
+
+    /**
+     * Returns the MediaRecorder object
+     * @return The current MediaRecorder object
+     */
+    public MediaRecorder getMediaRecorder() {
+        return this.mMediaRecorder;
     }
 
     /**

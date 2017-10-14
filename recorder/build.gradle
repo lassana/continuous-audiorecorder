@@ -14,7 +14,7 @@ apply plugin: 'com.novoda.bintray-release'
 publish {
     groupId = 'com.github.lassana'
     artifactId = 'continuous-audiorecorder'
-    publishVersion = '1.3.1'
+    publishVersion = '1.3.2'
     desc = 'Implementation of the missing feature in Android SDK: audio recorder with a pause.'
     licences = ['BSD Simplified']
     website = 'https://github.com/lassana/continuous-audiorecorder'

@@ -1,31 +1,8 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-    }
-}
 apply plugin: 'com.android.application'
 
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compile "com.android.support:support-v4:25.2.0"
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
-    compile "com.googlecode.mp4parser:isoparser:1.0.2"
-    //compile "com.github.lassana:continuous-audiorecorder:1.1.0"
-    compile project(":recorder")
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:4.3.1"
-}
-
-
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -33,7 +10,17 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion 15
+        targetSdkVersion 27
     }
+}
+
+dependencies {
+    implementation "com.android.support:support-v4:27.0.2"
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:design:27.0.2'
+    implementation "com.googlecode.mp4parser:isoparser:1.1.21"
+    //compile "com.github.lassana:continuous-audiorecorder:1.1.0"
+    api project(":recorder")
+    androidTestImplementation "com.jayway.android.robotium:robotium-solo:5.6.3"
 }

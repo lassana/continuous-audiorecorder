@@ -55,7 +55,7 @@ public class AudioRecorder {
                         /* Stereo                       */
                         2,
                         /* Default audio source (usually, device microphone)  */
-                        MediaRecorder.AudioSource.MIC,
+                        MediaRecorder.AudioSource.VOICE_COMMUNICATION,
                         /* Default encoder for the target Android version   */
                         ApiHelper.DEFAULT_AUDIO_ENCODER);
 

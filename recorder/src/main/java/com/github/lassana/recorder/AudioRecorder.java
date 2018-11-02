@@ -2,12 +2,16 @@ package com.github.lassana.recorder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,6 +22,7 @@ import java.io.IOException;
 public class AudioRecorder {
 
     private static final String TAG = "AudioRecorder";
+    private static int mAudioSource;
 
     public enum Status {
         STATUS_UNKNOWN,
@@ -45,7 +50,7 @@ public class AudioRecorder {
     public static class MediaRecorderConfig {
         private final int mAudioEncodingBitRate;
         private final int mAudioChannels;
-        private final int mAudioSource;
+        private int mAudioSource;
         private final int mAudioEncoder;
 
         public static final MediaRecorderConfig DEFAULT =
@@ -55,7 +60,7 @@ public class AudioRecorder {
                         /* Stereo                       */
                         2,
                         /* Default audio source (usually, device microphone)  */
-                        MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+                        MediaRecorder.AudioSource.DEFAULT,
                         /* Default encoder for the target Android version   */
                         ApiHelper.DEFAULT_AUDIO_ENCODER);
 
@@ -89,10 +94,12 @@ public class AudioRecorder {
                 mMediaRecorder.prepare();
                 mMediaRecorder.start();
             } catch (Exception e) {
-                try{
-                    mMediaRecorder.start();
-                }catch (Exception e1){
-                    e1.printStackTrace();
+                if (mAudioSource <= 9) {
+                    mAudioSource ++;
+                    mMediaRecorderConfig.mAudioSource = mAudioSource;
+                    start(this.mOnStartListener);
+                } else {
+                    Toast.makeText(mContext, "No suitable audio recorder found", Toast.LENGTH_SHORT).show();
                 }
                 exception = e;
             }
@@ -215,7 +222,7 @@ public class AudioRecorder {
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.setAudioEncodingBitRate(mMediaRecorderConfig.mAudioEncodingBitRate);
         mMediaRecorder.setAudioChannels(mMediaRecorderConfig.mAudioChannels);
-        mMediaRecorder.setAudioSource(mMediaRecorderConfig.mAudioSource);
+        mMediaRecorder.setAudioSource(mAudioSource);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mMediaRecorder.setOutputFile(getTemporaryFileName());
         mMediaRecorder.setAudioEncoder(mMediaRecorderConfig.mAudioEncoder);

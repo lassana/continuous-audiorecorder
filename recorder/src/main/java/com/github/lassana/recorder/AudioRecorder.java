@@ -99,7 +99,7 @@ public class AudioRecorder {
                     mMediaRecorderConfig.mAudioSource = mAudioSource;
                     start(this.mOnStartListener);
                 } else {
-                    Toast.makeText(mContext, "No suitable audio recorder found", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "No suitable audio recorder found", Toast.LENGTH_SHORT).show();
                 }
                 exception = e;
             }
@@ -217,6 +217,7 @@ public class AudioRecorder {
      */
     @SuppressLint("NewApi")
     public void start(@NonNull final OnStartListener listener) {
+        try{
         StartRecordTask task = new StartRecordTask();
 
         mMediaRecorder = new MediaRecorder();
@@ -227,7 +228,10 @@ public class AudioRecorder {
         mMediaRecorder.setOutputFile(getTemporaryFileName());
         mMediaRecorder.setAudioEncoder(mMediaRecorderConfig.mAudioEncoder);
 
-        task.execute(listener);
+        task.execute(listener);}
+        catch (Exception e){
+            Toast.makeText(mContext, "Mic is not available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
